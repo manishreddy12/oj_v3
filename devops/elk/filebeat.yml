@@ -1,0 +1,31 @@
+# Filebeat config — used by docker-compose
+# Collects logs from all Docker containers and ships to Logstash.
+
+filebeat.inputs:
+  - type: container
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    processors:
+      - add_docker_metadata:
+          host: "unix:///var/run/docker.sock"
+      - decode_json_fields:
+          fields: ["message"]
+          target: ""
+          overwrite_keys: true
+
+# Filter: only ship codeview service logs
+processors:
+  - drop_event:
+      when:
+        not:
+          or:
+            - equals:
+                docker.container.labels.com_docker_compose_service: "api"
+            - equals:
+                docker.container.labels.com_docker_compose_service: "execution"
+
+output.logstash:
+  hosts: ["logstash:5044"]
+
+logging.level: warning
+logging.to_files: false

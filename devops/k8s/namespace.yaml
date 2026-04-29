@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: codeview
+  labels:
+    name: codeview
+    app.kubernetes.io/managed-by: kubectl

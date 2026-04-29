@@ -1,0 +1,129 @@
+### ========================================
+### SUBMISSION ROUTES - Test Cases
+### Base URL: http://localhost:5001/api/submissions
+### ========================================
+
+
+### ----------------------------------------
+### 1. Submit Code - Success
+### ----------------------------------------
+POST http://localhost:5001/api/submissions
+Content-Type: application/json
+
+{
+  "userId": "64f1a2b3c4d5e6f7a8b9c0d1",
+  "problemId": "64f1a2b3c4d5e6f7a8b9c0d2",
+  "language": "python",
+  "sourceCode": "def twoSum(nums, target):\n    lookup = {}\n    for i, n in enumerate(nums):\n        if target - n in lookup:\n            return [lookup[target-n], i]\n        lookup[n] = i",
+  "testCases": [
+    { "input": "[2,7,11,15]\n9", "expectedOutput": "[0,1]" }
+  ]
+}
+
+### Expected: 201
+### { success: true, message: "Code submitted and judged successfully", data: { submission: {...} } }
+
+
+### ----------------------------------------
+### 2. Submit Code - Validation Error (Missing Source Code)
+### ----------------------------------------
+POST http://localhost:5001/api/submissions
+Content-Type: application/json
+
+{
+  "userId": "64f1a2b3c4d5e6f7a8b9c0d1",
+  "problemId": "64f1a2b3c4d5e6f7a8b9c0d2",
+  "language": "python"
+}
+
+### Expected: 400
+### { success: false, message: "Source code is required" }
+
+
+### ----------------------------------------
+### 3. Submit Code - Validation Error (Invalid Language)
+### ----------------------------------------
+POST http://localhost:5001/api/submissions
+Content-Type: application/json
+
+{
+  "userId": "64f1a2b3c4d5e6f7a8b9c0d1",
+  "problemId": "64f1a2b3c4d5e6f7a8b9c0d2",
+  "language": "ruby",
+  "sourceCode": "puts 'hello'"
+}
+
+### Expected: 400
+### { success: false, message: "Language must be one of: cpp, python, java" }
+
+
+### ----------------------------------------
+### 4. Get Submission Status - Success
+### ----------------------------------------
+GET http://localhost:5001/api/submissions/<valid_submission_id>
+
+### Expected: 200
+### { success: true, message: "Submission retrieved successfully", data: { submission: {...} } }
+
+
+### ----------------------------------------
+### 5. Get User Submissions - Success
+### ----------------------------------------
+GET http://localhost:5001/api/submissions/user/64f1a2b3c4d5e6f7a8b9c0d1
+
+### Expected: 200
+### { success: true, message: "User submissions retrieved successfully", data: { submissions: [...] } }
+
+
+### ----------------------------------------
+### 6. Get Problem Submissions - Success
+### ----------------------------------------
+GET http://localhost:5001/api/submissions/problem/64f1a2b3c4d5e6f7a8b9c0d2
+
+### Expected: 200
+### { success: true, message: "Problem submissions retrieved successfully", data: { submissions: [...] } }
+
+
+### ----------------------------------------
+### 7. AI Explain Code - Success
+### ----------------------------------------
+POST http://localhost:5001/api/submissions/explain
+Content-Type: application/json
+
+{
+  "sourceCode": "def factorial(n):\n    if n <= 1: return 1\n    return n * factorial(n-1)",
+  "language": "python"
+}
+
+### Expected: 200
+### { success: true, message: "Code explanation generated", data: { explanation: "..." } }
+
+
+### ----------------------------------------
+### 8. AI Explain Code - Validation Error (Missing Fields)
+### ----------------------------------------
+POST http://localhost:5001/api/submissions/explain
+Content-Type: application/json
+
+{
+  "sourceCode": "print('hello')"
+}
+
+### Expected: 400
+### { success: false, message: "sourceCode and language are required" }
+
+
+### ----------------------------------------
+### 9. AI Debug Code - Success
+### ----------------------------------------
+POST http://localhost:5001/api/submissions/debug
+Content-Type: application/json
+
+{
+  "sourceCode": "def add(a, b):\n    return a - b",
+  "language": "python",
+  "error": "Function returns wrong result for add(2,3), expected 5 got -1"
+}
+
+### Expected: 200
+### { success: true, message: "Debug suggestion generated", data: { suggestion: "..." } }

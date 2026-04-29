@@ -1,0 +1,121 @@
+### ========================================
+### PROBLEM ROUTES - Test Cases
+### Base URL: http://localhost:5000/api/problems
+### ========================================
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWJjZWJmNzIyZGY2ZTQyMjY1OWJlOWYiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzM5OTI1MzQsImV4cCI6MTc3NDA3ODkzNH0.APhpvID3OknyKYHGP-XQjBwhFFuB72w69WFd-sqZK8s
+
+
+### ----------------------------------------
+### 1. Get All Problems - Success (Public)
+### ----------------------------------------
+GET http://localhost:5000/api/problems
+
+### Expected: 200
+### { success: true, message: "Problems retrieved successfully", data: { problems: [...] } }
+
+
+### ----------------------------------------
+### 2. Get All Problems - Filter by Difficulty (Public)
+### ----------------------------------------
+GET http://localhost:5000/api/problems?difficulty=Easy
+
+### Expected: 200
+### { success: true, data: { problems: [ ... only Easy problems ... ] } }
+
+
+### ----------------------------------------
+### 3. Get Problem by ID - Success (Public)
+### ----------------------------------------
+GET http://localhost:5000/api/problems/<valid_problem_id>
+
+### Expected: 200
+### { success: true, message: "Problem retrieved successfully", data: { problem: {...} } }
+
+
+### ----------------------------------------
+### 4. Create Problem - Success (Requires Auth: problem_setter/admin)
+### ----------------------------------------
+POST http://localhost:5000/api/problems
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Two Sum",
+  "description": "Given an array of integers, return indices of the two numbers that add up to a specific target.",
+  "difficulty": "Easy",
+  "tags": ["array", "hash-map"],
+  "constraints": "2 <= nums.length <= 10^4",
+  "testCases": [
+    { "input": "[2,7,11,15]\n9", "expectedOutput": "[0,1]" },
+    { "input": "[3,2,4]\n6", "expectedOutput": "[1,2]" }
+  ],
+  "boilerplateCode": {
+    "cpp": "#include<iostream>\nusing namespace std;\nint main(){}",
+    "python": "def twoSum(nums, target):\n    pass",
+    "java": "class Solution { public int[] twoSum(int[] nums, int target) { return null; } }"
+  }
+}
+
+### Expected: 201
+### { success: true, message: "Problem created successfully", data: { problem: {...} } }
+
+
+### ----------------------------------------
+### 5. Create Problem - Validation Error (Missing Title)
+### ----------------------------------------
+POST http://localhost:5000/api/problems
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "description": "Some description",
+  "difficulty": "Easy",
+  "testCases": [{ "input": "1", "expectedOutput": "1" }]
+}
+
+### Expected: 400
+### { success: false, message: "Problem title is required" }
+
+
+### ----------------------------------------
+### 6. Create Problem - Unauthorized (No Token)
+### ----------------------------------------
+POST http://localhost:5000/api/problems
+Content-Type: application/json
+
+{
+  "title": "Unauthorized Problem",
+  "description": "Should fail",
+  "difficulty": "Easy",
+  "testCases": [{ "input": "1", "expectedOutput": "1" }]
+}
+
+### Expected: 401
+### { success: false, message: "No token provided" or "Unauthorized" }
+
+
+### ----------------------------------------
+### 7. Update Problem - Success (Requires Auth: problem_setter/admin)
+### ----------------------------------------
+PUT http://localhost:5000/api/problems/<valid_problem_id>
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Two Sum (Updated)",
+  "difficulty": "Medium"
+}
+
+### Expected: 200
+### { success: true, message: "Problem updated successfully", data: { problem: {...} } }
+
+
+### ----------------------------------------
+### 8. Delete Problem - Success (Requires Auth: admin only)
+### ----------------------------------------
+DELETE http://localhost:5000/api/problems/<valid_problem_id>
+Authorization: Bearer {{token}}
+
+### Expected: 200
+### { success: true, message: "Problem deleted successfully" }

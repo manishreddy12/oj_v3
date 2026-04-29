@@ -1,0 +1,397 @@
+[
+  {
+    "title": "Palindrome Check",
+    "description": "Given a string S consisting of lowercase English letters, determine whether it is a palindrome.\n\nA string is a palindrome if it reads the same forward and backward.\n\nInput:\nThe first line contains a single string S.\n\nOutput:\nPrint \"YES\" if the string is a palindrome, otherwise print \"NO\".",
+    "difficulty": "Easy",
+    "tags": ["string", "implementation"],
+    "constraints": "1 <= |S| <= 10^5\nS consists of lowercase English letters only",
+    "testCases": [
+      {
+        "input": "racecar",
+        "expectedOutput": "YES",
+        "isHidden": false
+      },
+      {
+        "input": "hello",
+        "expectedOutput": "NO",
+        "isHidden": false
+      },
+      {
+        "input": "a",
+        "expectedOutput": "YES",
+        "isHidden": true
+      },
+      {
+        "input": "abba",
+        "expectedOutput": "YES",
+        "isHidden": true
+      },
+      {
+        "input": "abcba",
+        "expectedOutput": "YES",
+        "isHidden": true
+      },
+      {
+        "input": "ab",
+        "expectedOutput": "NO",
+        "isHidden": true
+      }
+    ],
+    "boilerplateCode": {
+      "cpp": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // Check if s is a palindrome\n    // Print \"YES\" or \"NO\"\n    \n    return 0;\n}",
+      "python": "s = input()\n# Check if s is a palindrome\n# Print \"YES\" or \"NO\"\n",
+      "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.next();\n        // Check if s is a palindrome\n        // Print \"YES\" or \"NO\"\n        \n    }\n}"
+    }
+  },
+  {
+    "title": "Count Frequency",
+    "description": "Given an array of N integers, count the frequency of each distinct element and print them in the order of their first appearance.\n\nInput:\nThe first line contains a single integer N — the number of elements.\nThe second line contains N space-separated integers.\n\nOutput:\nFor each distinct element (in order of first appearance), print the element and its frequency separated by a space, one per line.",
+    "difficulty": "Easy",
+    "tags": ["array", "hash-map", "implementation"],
+    "constraints": "1 <= N <= 10^5\n-10^9 <= ai <= 10^9",
+    "testCases": [
+      {
+        "input": "7\n1 2 2 3 1 3 3",
+        "expectedOutput": "1 2\n2 2\n3 3",
+        "isHidden": false
+      },
+      {
+        "input": "5\n5 5 5 5 5",
+        "expectedOutput": "5 5",
+        "isHidden": false
+      },
+      {
+        "input": "1\n42",
+        "expectedOutput": "42 1",
+        "isHidden": true
+      },
+      {
+        "input": "6\n-1 2 -1 3 2 3",
+        "expectedOutput": "-1 2\n2 2\n3 2",
+        "isHidden": true
+      }
+    ],
+    "boilerplateCode": {
+      "cpp": "#include <iostream>\n#include <vector>\n#include <map>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // Read the array\n    // Count frequency of each element\n    // Print element and frequency in order of first appearance\n    \n    return 0;\n}",
+      "python": "n = int(input())\narr = list(map(int, input().split()))\n# Count frequency of each element\n# Print element and frequency in order of first appearance\n",
+      "java": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        // Read the array\n        // Count frequency of each element\n        // Print element and frequency in order of first appearance\n        \n    }\n}"
+    }
+  },
+  {
+    "title": "FizzBuzz Classic",
+    "description": "Given an integer N, print all numbers from 1 to N. But for multiples of 3, print \"Fizz\" instead of the number. For multiples of 5, print \"Buzz\". For multiples of both 3 and 5, print \"FizzBuzz\".\n\nInput:\nThe first line contains a single integer N.\n\nOutput:\nPrint N lines: for each number from 1 to N, print the appropriate output.",
+    "difficulty": "Easy",
+    "tags": ["implementation", "conditionals"],
+    "constraints": "1 <= N <= 10^4",
+    "testCases": [
+      {
+        "input": "5",
+        "expectedOutput": "1\n2\nFizz\n4\nBuzz",
+        "isHidden": false
+      },
+      {
+        "input": "15",
+        "expectedOutput": "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz",
+        "isHidden": false
+      },
+      {
+        "input": "1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "input": "3",
+        "expectedOutput": "1\n2\nFizz",
+        "isHidden": true
+      }
+    ],
+    "boilerplateCode": {
+      "cpp": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // Print FizzBuzz from 1 to n\n    \n    return 0;\n}",
+      "python": "n = int(input())\n# Print FizzBuzz from 1 to n\n",
+      "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        // Print FizzBuzz from 1 to n\n        \n    }\n}"
+    }
+  },
+  {
+    "title": "Matrix Transpose",
+    "description": "Given an R x C matrix of integers, print its transpose.\n\nThe transpose of a matrix is obtained by converting rows to columns and columns to rows.\n\nInput:\nThe first line contains two integers R and C — the number of rows and columns.\nThe next R lines each contain C space-separated integers.\n\nOutput:\nPrint the transposed matrix: C lines, each containing R space-separated integers.",
+    "difficulty": "Easy",
+    "tags": ["matrix", "implementation"],
+    "constraints": "1 <= R, C <= 100\n-10^4 <= element <= 10^4",
+    "testCases": [
+      {
+        "input": "2 3\n1 2 3\n4 5 6",
+        "expectedOutput": "1 4\n2 5\n3 6",
+        "isHidden": false
+      },
+      {
+        "input": "3 3\n1 0 0\n0 1 0\n0 0 1",
+        "expectedOutput": "1 0 0\n0 1 0\n0 0 1",
+        "isHidden": false
+      },
+      {
+        "input": "1 4\n10 20 30 40",
+        "expectedOutput": "10\n20\n30\n40",
+        "isHidden": true
+      },
+      {
+        "input": "3 1\n5\n-3\n7",
+        "expectedOutput": "5 -3 7",
+        "isHidden": true
+      }
+    ],
+    "boilerplateCode": {
+      "cpp": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int r, c;\n    cin >> r >> c;\n    // Read the R x C matrix\n    // Print its transpose (C x R)\n    \n    return 0;\n}",
+      "python": "r, c = map(int, input().split())\n# Read the R x C matrix\n# Print its transpose (C x R)\n",
+      "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int r = sc.nextInt();\n        int c = sc.nextInt();\n        // Read the R x C matrix\n        // Print its transpose (C x R)\n        \n    }\n}"
+    }
+  },
+  {
+    "title": "Merge Sorted Arrays",
+    "description": "Given two sorted arrays of sizes N and M respectively, merge them into a single sorted array.\n\nInput:\nThe first line contains two integers N and M.\nThe second line contains N space-separated integers (sorted in ascending order).\nThe third line contains M space-separated integers (sorted in ascending order).\n\nOutput:\nPrint N+M space-separated integers — the merged sorted array.",
+    "difficulty": "Medium",
+    "tags": ["array", "sorting", "two-pointer"],
+    "constraints": "1 <= N, M <= 10^5\n-10^9 <= ai, bi <= 10^9",
+    "testCases": [
+      {
+        "input": "3 3\n1 3 5\n2 4 6",
+        "expectedOutput": "1 2 3 4 5 6",
+        "isHidden": false
+      },
+      {
+        "input": "4 2\n1 2 3 4\n5 6",
+        "expectedOutput": "1 2 3 4 5 6",
+        "isHidden": false
+      },
+      {
+        "input": "1 1\n1\n2",
+        "expectedOutput": "1 2",
+        "isHidden": true
+      },
+      {
+        "input": "3 3\n-5 -3 -1\n-4 -2 0",
+        "expectedOutput": "-5 -4 -3 -2 -1 0",
+        "isHidden": true
+      },
+      {
+        "input": "2 3\n1 1\n1 1 1",
+        "expectedOutput": "1 1 1 1 1",
+        "isHidden": true
+      }
+    ],
+    "boilerplateCode": {
+      "cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n, m;\n    cin >> n >> m;\n    // Read both sorted arrays\n    // Merge and print the sorted result\n    \n    return 0;\n}",
+      "python": "n, m = map(int, input().split())\na = list(map(int, input().split()))\nb = list(map(int, input().split()))\n# Merge and print the sorted result\n",
+      "java": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int m = sc.nextInt();\n        // Read both sorted arrays\n        // Merge and print the sorted result\n        \n    }\n}"
+    }
+  },
+  {
+    "title": "Balanced Parentheses",
+    "description": "Given a string S containing only the characters '(', ')', '{', '}', '[' and ']', determine if the input string has balanced parentheses.\n\nA string is balanced if:\n- Every opening bracket has a corresponding closing bracket of the same type.\n- Brackets are closed in the correct order.\n\nInput:\nThe first line contains a single string S.\n\nOutput:\nPrint \"YES\" if the string has balanced parentheses, otherwise print \"NO\".",
+    "difficulty": "Medium",
+    "tags": ["stack", "string", "implementation"],
+    "constraints": "1 <= |S| <= 10^5",
+    "testCases": [
+      {
+        "input": "()[]{}",
+        "expectedOutput": "YES",
+        "isHidden": false
+      },
+      {
+        "input": "(]",
+        "expectedOutput": "NO",
+        "isHidden": false
+      },
+      {
+        "input": "{[()]}",
+        "expectedOutput": "YES",
+        "isHidden": false
+      },
+      {
+        "input": "(",
+        "expectedOutput": "NO",
+        "isHidden": true
+      },
+      {
+        "input": "((()))",
+        "expectedOutput": "YES",
+        "isHidden": true
+      },
+      {
+        "input": "([)]",
+        "expectedOutput": "NO",
+        "isHidden": true
+      },
+      {
+        "input": "",
+        "expectedOutput": "YES",
+        "isHidden": true
+      }
+    ],
+    "boilerplateCode": {
+      "cpp": "#include <iostream>\n#include <stack>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // Check if parentheses are balanced using a stack\n    // Print \"YES\" or \"NO\"\n    \n    return 0;\n}",
+      "python": "s = input()\n# Check if parentheses are balanced using a stack\n# Print \"YES\" or \"NO\"\n",
+      "java": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.nextLine();\n        // Check if parentheses are balanced using a stack\n        // Print \"YES\" or \"NO\"\n        \n    }\n}"
+    }
+  },
+  {
+    "title": "Next Greater Element",
+    "description": "Given an array of N integers, find the next greater element for each element. The next greater element of an element x is the first element to the right of x that is greater than x. If no such element exists, output -1.\n\nInput:\nThe first line contains a single integer N — the number of elements.\nThe second line contains N space-separated integers.\n\nOutput:\nPrint N space-separated integers — the next greater element for each position.",
+    "difficulty": "Medium",
+    "tags": ["stack", "array", "monotonic-stack"],
+    "constraints": "1 <= N <= 10^5\n-10^9 <= ai <= 10^9",
+    "testCases": [
+      {
+        "input": "4\n1 3 2 4",
+        "expectedOutput": "3 4 4 -1",
+        "isHidden": false
+      },
+      {
+        "input": "5\n5 4 3 2 1",
+        "expectedOutput": "-1 -1 -1 -1 -1",
+        "isHidden": false
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "input": "6\n2 7 3 5 4 6",
+        "expectedOutput": "7 -1 5 6 6 -1",
+        "isHidden": true
+      },
+      {
+        "input": "3\n1 1 1",
+        "expectedOutput": "-1 -1 -1",
+        "isHidden": true
+      }
+    ],
+    "boilerplateCode": {
+      "cpp": "#include <iostream>\n#include <vector>\n#include <stack>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // Read the array\n    // Find next greater element for each position\n    // Print space-separated results\n    \n    return 0;\n}",
+      "python": "n = int(input())\narr = list(map(int, input().split()))\n# Find next greater element for each position\n# Print space-separated results\n",
+      "java": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        // Read the array\n        // Find next greater element for each position\n        // Print space-separated results\n        \n    }\n}"
+    }
+  },
+  {
+    "title": "Longest Increasing Subsequence",
+    "description": "Given an array of N integers, find the length of the longest strictly increasing subsequence (LIS).\n\nA subsequence is a sequence that can be derived from the array by deleting some or no elements without changing the order of the remaining elements.\n\nInput:\nThe first line contains a single integer N — the number of elements.\nThe second line contains N space-separated integers.\n\nOutput:\nPrint a single integer — the length of the longest increasing subsequence.",
+    "difficulty": "Hard",
+    "tags": ["dynamic-programming", "binary-search", "array"],
+    "constraints": "1 <= N <= 10^5\n-10^9 <= ai <= 10^9",
+    "testCases": [
+      {
+        "input": "6\n10 9 2 5 3 7",
+        "expectedOutput": "3",
+        "isHidden": false
+      },
+      {
+        "input": "8\n0 1 0 3 2 3 7 101",
+        "expectedOutput": "5",
+        "isHidden": false
+      },
+      {
+        "input": "1\n5",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "input": "5\n5 4 3 2 1",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "5",
+        "isHidden": true
+      },
+      {
+        "input": "7\n3 1 4 1 5 9 2",
+        "expectedOutput": "4",
+        "isHidden": true
+      }
+    ],
+    "boilerplateCode": {
+      "cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // Read the array\n    // Find length of longest increasing subsequence\n    \n    return 0;\n}",
+      "python": "n = int(input())\narr = list(map(int, input().split()))\n# Find length of longest increasing subsequence\n",
+      "java": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        // Read the array\n        // Find length of longest increasing subsequence\n        \n    }\n}"
+    }
+  },
+  {
+    "title": "Graph BFS Shortest Path",
+    "description": "Given an unweighted undirected graph with N nodes (numbered 1 to N) and M edges, find the shortest path distance from node 1 to node N. If no path exists, print -1.\n\nInput:\nThe first line contains two integers N and M — the number of nodes and edges.\nEach of the next M lines contains two integers U and V — representing an edge between node U and node V.\n\nOutput:\nPrint a single integer — the shortest path distance from node 1 to node N, or -1 if unreachable.",
+    "difficulty": "Hard",
+    "tags": ["graph", "bfs", "shortest-path"],
+    "constraints": "2 <= N <= 10^4\n0 <= M <= 10^5\n1 <= U, V <= N",
+    "testCases": [
+      {
+        "input": "5 5\n1 2\n2 3\n3 4\n4 5\n1 4",
+        "expectedOutput": "2",
+        "isHidden": false
+      },
+      {
+        "input": "4 2\n1 2\n3 4",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "input": "2 1\n1 2",
+        "expectedOutput": "1",
+        "isHidden": true
+      },
+      {
+        "input": "3 0",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "input": "6 7\n1 2\n1 3\n2 4\n3 4\n4 5\n5 6\n2 6",
+        "expectedOutput": "2",
+        "isHidden": true
+      }
+    ],
+    "boilerplateCode": {
+      "cpp": "#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int n, m;\n    cin >> n >> m;\n    // Build adjacency list\n    // BFS from node 1 to node N\n    // Print shortest distance or -1\n    \n    return 0;\n}",
+      "python": "from collections import deque\n\nn, m = map(int, input().split())\n# Build adjacency list from m edges\n# BFS from node 1 to node n\n# Print shortest distance or -1\n",
+      "java": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int m = sc.nextInt();\n        // Build adjacency list\n        // BFS from node 1 to node N\n        // Print shortest distance or -1\n        \n    }\n}"
+    }
+  },
+  {
+    "title": "Count Vowels and Consonants",
+    "description": "Given a string S consisting of lowercase English letters, count the number of vowels and consonants.\n\nVowels are: a, e, i, o, u. All other lowercase letters are consonants.\n\nInput:\nThe first line contains a single string S.\n\nOutput:\nPrint two space-separated integers — the number of vowels and the number of consonants.",
+    "difficulty": "Easy",
+    "tags": ["string", "implementation"],
+    "constraints": "1 <= |S| <= 10^5\nS consists of lowercase English letters only",
+    "testCases": [
+      {
+        "input": "hello",
+        "expectedOutput": "2 3",
+        "isHidden": false
+      },
+      {
+        "input": "aeiou",
+        "expectedOutput": "5 0",
+        "isHidden": false
+      },
+      {
+        "input": "bcdfg",
+        "expectedOutput": "0 5",
+        "isHidden": true
+      },
+      {
+        "input": "a",
+        "expectedOutput": "1 0",
+        "isHidden": true
+      },
+      {
+        "input": "programming",
+        "expectedOutput": "3 8",
+        "isHidden": true
+      }
+    ],
+    "boilerplateCode": {
+      "cpp": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // Count vowels and consonants\n    // Print: vowels consonants (space-separated)\n    \n    return 0;\n}",
+      "python": "s = input()\n# Count vowels and consonants\n# Print: vowels consonants (space-separated)\n",
+      "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.next();\n        // Count vowels and consonants\n        // Print: vowels consonants (space-separated)\n        \n    }\n}"
+    }
+  }
+]

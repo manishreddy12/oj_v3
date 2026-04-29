@@ -1,0 +1,57 @@
+---
+# Deploy the ELK stack to the logging namespace in Kubernetes.
+# Usage: ansible-playbook -i ../inventory.ini elk_deploy.yml
+
+- name: Deploy ELK Stack
+  hosts: local
+  vars:
+    manifests_dir: "{{ playbook_dir }}/../../k8s/elk"
+
+  tasks:
+
+    - name: Create logging namespace
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ manifests_dir }}/namespace.yaml"
+
+    - name: Apply Elasticsearch (StatefulSet + PVC + Service)
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ manifests_dir }}/elasticsearch.yaml"
+
+    - name: Wait for Elasticsearch to be ready
+      command: >
+        kubectl rollout status statefulset/elasticsearch
+        -n logging --timeout=180s
+      changed_when: false
+
+    - name: Apply Logstash (Deployment + ConfigMap + Service)
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ manifests_dir }}/logstash.yaml"
+
+    - name: Apply Kibana (Deployment + Service)
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ manifests_dir }}/kibana.yaml"
+
+    - name: Apply Filebeat DaemonSet
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ manifests_dir }}/filebeat.yaml"
+
+    - name: Wait for Kibana to be ready
+      command: >
+        kubectl rollout status deployment/kibana
+        -n logging --timeout=180s
+      changed_when: false
+
+    - name: Get Kibana NodePort URL
+      command: minikube service kibana -n logging --url
+      register: kibana_url
+      changed_when: false
+      ignore_errors: true
+
+    - name: Print Kibana URL
+      debug:
+        msg: "Kibana is available at: {{ kibana_url.stdout | default('http://<minikube-ip>:30601') }}"

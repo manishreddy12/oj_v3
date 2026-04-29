@@ -1,0 +1,26 @@
+---
+# Master playbook — run everything in order.
+# Usage:
+#   ansible-playbook -i inventory.ini site.yml
+#   ansible-playbook -i inventory.ini site.yml --tags deploy   (deploy only)
+#   ansible-playbook -i inventory.ini site.yml --tags elk      (ELK only)
+
+- name: Setup host prerequisites
+  hosts: local
+  become: true
+  roles:
+    - common
+    - docker
+    - kubernetes
+
+- name: Deploy application to Kubernetes
+  hosts: local
+  roles:
+    - app_deploy
+  tags: deploy
+
+- name: Deploy ELK stack
+  hosts: local
+  roles:
+    - elk_deploy
+  tags: elk

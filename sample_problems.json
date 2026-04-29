@@ -1,0 +1,177 @@
+[
+  {
+    "title": "Sum of Array",
+    "description": "Given an array of N integers, find the sum of all elements.\n\nInput:\nThe first line contains a single integer N — the number of elements.\nThe second line contains N space-separated integers a1, a2, ..., aN.\n\nOutput:\nPrint a single integer — the sum of all elements in the array.",
+    "difficulty": "Easy",
+    "tags": ["array", "math", "implementation"],
+    "constraints": "1 <= N <= 10^5\n-10^9 <= ai <= 10^9",
+    "testCases": [
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "15",
+        "isHidden": false
+      },
+      {
+        "input": "3\n-1 0 1",
+        "expectedOutput": "0",
+        "isHidden": false
+      },
+      {
+        "input": "1\n42",
+        "expectedOutput": "42",
+        "isHidden": true
+      },
+      {
+        "input": "4\n1000000000 1000000000 1000000000 1000000000",
+        "expectedOutput": "4000000000",
+        "isHidden": true
+      }
+    ],
+    "boilerplateCode": {
+      "cpp": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // Read the array and compute the sum\n    \n    return 0;\n}",
+      "python": "n = int(input())\narr = list(map(int, input().split()))\n# Compute and print the sum\n",
+      "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        // Read the array and compute the sum\n        \n    }\n}"
+    }
+  },
+  {
+    "title": "Reverse Array",
+    "description": "Given an array of N integers, print the array in reverse order.\n\nInput:\nThe first line contains a single integer N — the number of elements.\nThe second line contains N space-separated integers.\n\nOutput:\nPrint N space-separated integers — the array in reverse order.",
+    "difficulty": "Easy",
+    "tags": ["array", "implementation"],
+    "constraints": "1 <= N <= 10^5\n-10^9 <= ai <= 10^9",
+    "testCases": [
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "5 4 3 2 1",
+        "isHidden": false
+      },
+      {
+        "input": "3\n10 20 30",
+        "expectedOutput": "30 20 10",
+        "isHidden": false
+      },
+      {
+        "input": "1\n99",
+        "expectedOutput": "99",
+        "isHidden": true
+      },
+      {
+        "input": "4\n-5 0 5 10",
+        "expectedOutput": "10 5 0 -5",
+        "isHidden": true
+      }
+    ],
+    "boilerplateCode": {
+      "cpp": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // Read the array, reverse it, and print space-separated\n    \n    return 0;\n}",
+      "python": "n = int(input())\narr = list(map(int, input().split()))\n# Reverse and print space-separated\n",
+      "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        // Read the array, reverse it, and print space-separated\n        \n    }\n}"
+    }
+  },
+  {
+    "title": "Two Sum",
+    "description": "Given an array of N integers and a target value T, find two distinct indices i and j such that arr[i] + arr[j] = T. Print the two indices (0-indexed) in ascending order.\n\nIt is guaranteed that exactly one solution exists.\n\nInput:\nThe first line contains two integers N and T — the number of elements and the target sum.\nThe second line contains N space-separated integers.\n\nOutput:\nPrint two space-separated integers — the indices i and j (0-indexed, i < j) such that arr[i] + arr[j] = T.",
+    "difficulty": "Medium",
+    "tags": ["array", "hash-map", "two-pointer"],
+    "constraints": "2 <= N <= 10^4\n-10^9 <= ai <= 10^9\n-10^9 <= T <= 10^9",
+    "testCases": [
+      {
+        "input": "4 9\n2 7 11 15",
+        "expectedOutput": "0 1",
+        "isHidden": false
+      },
+      {
+        "input": "3 6\n3 2 4",
+        "expectedOutput": "1 2",
+        "isHidden": false
+      },
+      {
+        "input": "2 6\n3 3",
+        "expectedOutput": "0 1",
+        "isHidden": true
+      },
+      {
+        "input": "5 -1\n-3 4 3 90 -4",
+        "expectedOutput": "0 2",
+        "isHidden": true
+      }
+    ],
+    "boilerplateCode": {
+      "cpp": "#include <iostream>\n#include <unordered_map>\nusing namespace std;\n\nint main() {\n    int n, target;\n    cin >> n >> target;\n    // Read array, find two indices that sum to target\n    // Print: i j (space-separated, 0-indexed, i < j)\n    \n    return 0;\n}",
+      "python": "n, target = map(int, input().split())\narr = list(map(int, input().split()))\n# Find two indices that sum to target\n# Print: i j (space-separated, 0-indexed, i < j)\n",
+      "java": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int target = sc.nextInt();\n        // Read array, find two indices that sum to target\n        // Print: i j (space-separated, 0-indexed, i < j)\n        \n    }\n}"
+    }
+  },
+  {
+    "title": "Maximum Subarray Sum",
+    "description": "Given an array of N integers, find the maximum sum of any contiguous subarray.\n\nInput:\nThe first line contains a single integer N — the number of elements.\nThe second line contains N space-separated integers.\n\nOutput:\nPrint a single integer — the maximum subarray sum.",
+    "difficulty": "Medium",
+    "tags": ["array", "dynamic-programming", "greedy"],
+    "constraints": "1 <= N <= 10^5\n-10^4 <= ai <= 10^4",
+    "testCases": [
+      {
+        "input": "9\n-2 1 -3 4 -1 2 1 -5 4",
+        "expectedOutput": "6",
+        "isHidden": false
+      },
+      {
+        "input": "1\n-1",
+        "expectedOutput": "-1",
+        "isHidden": false
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "15",
+        "isHidden": true
+      },
+      {
+        "input": "5\n-1 -2 -3 -4 -5",
+        "expectedOutput": "-1",
+        "isHidden": true
+      },
+      {
+        "input": "6\n5 -3 5 -2 5 -1",
+        "expectedOutput": "9",
+        "isHidden": true
+      }
+    ],
+    "boilerplateCode": {
+      "cpp": "#include <iostream>\n#include <climits>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // Read the array, find maximum subarray sum (Kadane's Algorithm)\n    \n    return 0;\n}",
+      "python": "n = int(input())\narr = list(map(int, input().split()))\n# Find maximum subarray sum (Kadane's Algorithm)\n",
+      "java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        // Read the array, find maximum subarray sum (Kadane's Algorithm)\n        \n    }\n}"
+    }
+  },
+  {
+    "title": "Binary Search",
+    "description": "Given a sorted array of N distinct integers and Q queries, for each query find the 0-based index of the target element. If the element is not found, print -1.\n\nInput:\nThe first line contains two integers N and Q — the size of the array and the number of queries.\nThe second line contains N space-separated integers in sorted (ascending) order.\nEach of the next Q lines contains a single integer — the target to search for.\n\nOutput:\nFor each query, print the 0-based index of the target element, or -1 if not found. Each answer on a new line.",
+    "difficulty": "Hard",
+    "tags": ["array", "binary-search", "sorting"],
+    "constraints": "1 <= N <= 10^5\n1 <= Q <= 10^5\n-10^9 <= ai <= 10^9",
+    "testCases": [
+      {
+        "input": "5 3\n1 3 5 7 9\n5\n2\n9",
+        "expectedOutput": "2\n-1\n4",
+        "isHidden": false
+      },
+      {
+        "input": "3 2\n10 20 30\n10\n30",
+        "expectedOutput": "0\n2",
+        "isHidden": false
+      },
+      {
+        "input": "1 1\n42\n42",
+        "expectedOutput": "0",
+        "isHidden": true
+      },
+      {
+        "input": "6 4\n-10 -5 0 5 10 15\n0\n-10\n15\n7",
+        "expectedOutput": "2\n0\n5\n-1",
+        "isHidden": true
+      }
+    ],
+    "boilerplateCode": {
+      "cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int n, q;\n    cin >> n >> q;\n    // Read sorted array\n    // For each query, binary search and print index or -1\n    \n    return 0;\n}",
+      "python": "n, q = map(int, input().split())\narr = list(map(int, input().split()))\n# For each query, binary search and print index or -1\nfor _ in range(q):\n    target = int(input())\n    # search and print result\n",
+      "java": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int q = sc.nextInt();\n        // Read sorted array\n        // For each query, binary search and print index or -1\n        \n    }\n}"
+    }
+  }
+]

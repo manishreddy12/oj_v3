@@ -1,0 +1,173 @@
+---
+# Idempotent setup playbook — install and configure all tooling on Ubuntu.
+# Run once before any deployment.
+# Usage: ansible-playbook -i ../inventory.ini setup.yml --ask-become-pass
+
+- name: System setup for CodeView DevOps stack
+  hosts: local
+  become: true
+  vars:
+    minikube_version: "v1.33.0"
+    kubectl_version:  "v1.30.0"
+
+  tasks:
+
+    # ── System packages ──────────────────────────────────────────────────────
+    - name: Update apt cache
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install base packages
+      apt:
+        name:
+          - curl
+          - wget
+          - git
+          - apt-transport-https
+          - ca-certificates
+          - gnupg
+          - lsb-release
+          - python3-pip
+          - jq
+          - unzip
+        state: present
+
+    # ── Docker ───────────────────────────────────────────────────────────────
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
+        state: present
+
+    - name: Install Docker Engine
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Add current user to docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: true
+
+    # ── kubectl ───────────────────────────────────────────────────────────────
+    - name: Download kubectl
+      get_url:
+        url: "https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl"
+        dest: /usr/local/bin/kubectl
+        mode: "0755"
+
+    - name: Verify kubectl
+      command: kubectl version --client
+      register: kubectl_out
+      changed_when: false
+
+    - name: Print kubectl version
+      debug:
+        msg: "{{ kubectl_out.stdout }}"
+
+    # ── Minikube ──────────────────────────────────────────────────────────────
+    - name: Download Minikube
+      get_url:
+        url: "https://github.com/kubernetes/minikube/releases/download/{{ minikube_version }}/minikube-linux-amd64"
+        dest: /usr/local/bin/minikube
+        mode: "0755"
+
+    - name: Start Minikube (Docker driver, 4 CPU, 6 GB RAM)
+      become: false
+      command: |
+        minikube start \
+          --driver=docker \
+          --cpus=4 \
+          --memory=6144 \
+          --disk-size=20g \
+          --addons=ingress,metrics-server,dashboard
+      register: minikube_start
+      changed_when: "'Done' in minikube_start.stdout"
+      failed_when: minikube_start.rc != 0
+
+    # ── Ansible Kubernetes collection ─────────────────────────────────────────
+    - name: Install kubernetes Python library
+      pip:
+        name: kubernetes
+        state: present
+
+    - name: Install Ansible kubernetes.core collection
+      become: false
+      command: ansible-galaxy collection install kubernetes.core
+      changed_when: false
+
+    # ── Trivy (container security scanner) ────────────────────────────────────
+    - name: Add Trivy repository
+      shell: |
+        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | apt-key add -
+        echo "deb https://aquasecurity.github.io/trivy-repo/deb {{ ansible_lsb.codename }} main" \
+          > /etc/apt/sources.list.d/trivy.list
+      args:
+        creates: /etc/apt/sources.list.d/trivy.list
+
+    - name: Install Trivy
+      apt:
+        name: trivy
+        update_cache: true
+        state: present
+
+    # ── Jenkins (optional — only if not already installed) ────────────────────
+    - name: Check if Jenkins is installed
+      stat:
+        path: /usr/share/jenkins
+      register: jenkins_installed
+
+    - name: Install Jenkins
+      when: not jenkins_installed.stat.exists
+      block:
+        - name: Add Jenkins GPG key
+          apt_key:
+            url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+            state: present
+
+        - name: Add Jenkins repository
+          apt_repository:
+            repo: "deb https://pkg.jenkins.io/debian-stable binary/"
+            state: present
+
+        - name: Install Java (Jenkins dependency)
+          apt:
+            name: openjdk-17-jdk
+            state: present
+
+        - name: Install Jenkins
+          apt:
+            name: jenkins
+            update_cache: true
+            state: present
+
+        - name: Start Jenkins
+          service:
+            name: jenkins
+            state: started
+            enabled: true
+
+        - name: Get Jenkins initial admin password
+          command: cat /var/lib/jenkins/secrets/initialAdminPassword
+          register: jenkins_pass
+          changed_when: false
+
+        - name: Print Jenkins initial password
+          debug:
+            msg: "Jenkins initial password: {{ jenkins_pass.stdout }}"

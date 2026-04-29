@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: codeview
+  labels:
+    app: frontend
+spec:
+  # NodePort lets you hit the frontend at <NodeIP>:<nodePort> without an Ingress
+  # Change to ClusterIP if you have an Ingress controller
+  type: NodePort
+  selector:
+    app: frontend
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30080        # access at http://<minikube-ip>:30080

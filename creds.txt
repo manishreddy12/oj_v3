@@ -1,0 +1,19 @@
+
+username: "testuser01"
+userimage: ""
+email: "testuser01@example.com"
+password: "password1234"
+role: "student"
+
+username: "testuser02"
+userimage: ""
+email: "testuser02@example.com"
+password: "password1234"
+role: "student"
+
+
+username: "testadmin01"
+userimage: ""
+email: "testadmin01@example.com"
+password: "password1234"
+role: "admin"

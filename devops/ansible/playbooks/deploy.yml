@@ -1,0 +1,143 @@
+---
+# Deployment playbook — called by Jenkins after Docker images are pushed.
+# Usage (manually):
+#   ansible-playbook -i ../inventory.ini deploy.yml \
+#     -e image_tag=42-abc1234 \
+#     -e dockerhub_user=yourdockerhubuser
+#
+# Jenkins passes these as --extra-vars automatically.
+
+- name: Deploy CodeView to Kubernetes
+  hosts: local
+  vars:
+    image_tag:       "latest"                    # overridden by Jenkins
+    dockerhub_user:  "manishr09"          # overridden by Jenkins
+    k8s_namespace:   "codeview"
+    manifests_dir:   "{{ playbook_dir }}/../../k8s"
+
+  tasks:
+
+    # ── Namespaces ────────────────────────────────────────────────────────────
+    - name: Create codeview namespace
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ manifests_dir }}/namespace.yaml"
+
+    - name: Create logging namespace
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ manifests_dir }}/elk/namespace.yaml"
+
+    # ── ConfigMaps & Secrets ──────────────────────────────────────────────────
+    - name: Apply api-service configmap
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ manifests_dir }}/api-service/configmap.yaml"
+
+    - name: Apply api-service secret (template — fill values first!)
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ manifests_dir }}/api-service/secret.yaml"
+
+    - name: Apply execution-service configmap
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ manifests_dir }}/execution-service/configmap.yaml"
+
+    - name: Apply execution-service secret
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ manifests_dir }}/execution-service/secret.yaml"
+
+    # ── Update image tags in deployments ──────────────────────────────────────
+    - name: Patch api-service image tag
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: api-service
+            namespace: "{{ k8s_namespace }}"
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: api-service
+                    image: "{{ dockerhub_user }}/codeview-api:{{ image_tag }}"
+
+    - name: Patch execution-service image tag
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: execution-service
+            namespace: "{{ k8s_namespace }}"
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: execution-service
+                    image: "{{ dockerhub_user }}/codeview-execution:{{ image_tag }}"
+
+    - name: Patch frontend image tag
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: frontend
+            namespace: "{{ k8s_namespace }}"
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: frontend
+                    image: "{{ dockerhub_user }}/codeview-frontend:{{ image_tag }}"
+
+    # ── Apply remaining manifests ─────────────────────────────────────────────
+    - name: Apply api-service deployment and service
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ item }}"
+      loop:
+        - "{{ manifests_dir }}/api-service/deployment.yaml"
+        - "{{ manifests_dir }}/api-service/service.yaml"
+        - "{{ manifests_dir }}/api-service/hpa.yaml"
+        - "{{ manifests_dir }}/execution-service/deployment.yaml"
+        - "{{ manifests_dir }}/execution-service/service.yaml"
+        - "{{ manifests_dir }}/execution-service/hpa.yaml"
+        - "{{ manifests_dir }}/frontend/deployment.yaml"
+        - "{{ manifests_dir }}/frontend/service.yaml"
+        - "{{ manifests_dir }}/ingress.yaml"
+
+    # ── Wait for rollouts ─────────────────────────────────────────────────────
+    - name: Wait for api-service rollout
+      command: >
+        kubectl rollout status deployment/api-service
+        -n {{ k8s_namespace }} --timeout=120s
+      changed_when: false
+
+    - name: Wait for execution-service rollout
+      command: >
+        kubectl rollout status deployment/execution-service
+        -n {{ k8s_namespace }} --timeout=120s
+      changed_when: false
+
+    - name: Wait for frontend rollout
+      command: >
+        kubectl rollout status deployment/frontend
+        -n {{ k8s_namespace }} --timeout=60s
+      changed_when: false
+
+    - name: Show all pods in codeview namespace
+      command: kubectl get pods -n {{ k8s_namespace }} -o wide
+      register: pods_out
+      changed_when: false
+
+    - name: Print pods status
+      debug:
+        msg: "{{ pods_out.stdout_lines }}"

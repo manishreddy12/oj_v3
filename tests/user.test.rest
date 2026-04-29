@@ -1,0 +1,75 @@
+### ========================================
+### USER ROUTES - Test Cases
+### Base URL: http://localhost:5000/api/users
+### All routes require authentication
+### ========================================
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWJjZWJmNzIyZGY2ZTQyMjY1OWJlOWYiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzM5OTI1MzQsImV4cCI6MTc3NDA3ODkzNH0.APhpvID3OknyKYHGP-XQjBwhFFuB72w69WFd-sqZK8s
+
+
+### ----------------------------------------
+### 1. Get Profile - Success (Any Authenticated User)
+### ----------------------------------------
+GET http://localhost:5000/api/users/profile
+Authorization: Bearer {{token}}
+
+### Expected: 200
+### { success: true, message: "Profile retrieved successfully", data: { user: {...} } }
+
+
+### ----------------------------------------
+### 2. Get Profile - Unauthorized (No Token)
+### ----------------------------------------
+GET http://localhost:5000/api/users/profile
+
+### Expected: 401
+### { success: false, message: "No token provided" or "Unauthorized" }
+
+
+### ----------------------------------------
+### 3. Get All Users - Success (Admin Only)
+### ----------------------------------------
+GET http://localhost:5000/api/users
+Authorization: Bearer {{token}}
+
+### Expected: 200 (if admin token)
+### { success: true, message: "Users retrieved successfully", data: { users: [...] } }
+
+### Expected: 403 (if non-admin token)
+### { success: false, message: "Forbidden" or "Access denied" }
+
+
+### ----------------------------------------
+### 4. Get User by ID - Success (Admin Only)
+### ----------------------------------------
+GET http://localhost:5000/api/users/<valid_user_id>
+Authorization: Bearer {{token}}
+
+### Expected: 200
+### { success: true, message: "User retrieved successfully", data: { user: {...} } }
+
+
+### ----------------------------------------
+### 5. Update User - Success (Admin Only)
+### ----------------------------------------
+PUT http://localhost:5000/api/users/<valid_user_id>
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "username": "updatedUsername",
+  "role": "problem_setter"
+}
+
+### Expected: 200
+### { success: true, message: "User updated successfully", data: { user: {...} } }
+
+
+### ----------------------------------------
+### 6. Delete User - Success (Admin Only)
+### ----------------------------------------
+DELETE http://localhost:5000/api/users/<valid_user_id>
+Authorization: Bearer {{token}}
+
+### Expected: 200
+### { success: true, message: "User deleted successfully" }

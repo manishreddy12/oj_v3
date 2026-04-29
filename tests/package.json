@@ -1,0 +1,29 @@
+{
+  "name": "codeview-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Integration and smoke tests for CodeView microservices",
+  "scripts": {
+    "test": "jest --forceExit --passWithNoTests",
+    "test:smoke": "jest deployment-smoke.test.js --forceExit",
+    "test:integration": "jest k8s-integration.test.js --forceExit",
+    "test:hpa": "jest hpa-validation.test.js --forceExit",
+    "test:all": "jest --forceExit",
+    "test:ci": "jest --forceExit --ci --reporters=default --reporters=jest-junit"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 30000,
+    "reporters": [
+      "default",
+      ["jest-junit", {
+        "outputDirectory": ".",
+        "outputName": "junit.xml"
+      }]
+    ]
+  },
+  "dependencies": {
+    "jest": "^29.7.0",
+    "jest-junit": "^16.0.0"
+  }
+}

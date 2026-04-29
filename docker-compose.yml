@@ -1,0 +1,207 @@
+# Local development stack — mirrors the production architecture.
+# Usage:
+#   docker compose up --build          # start everything
+#   docker compose up api execution    # start backends only
+#   docker compose down -v             # stop and remove volumes
+
+version: "3.9"
+
+networks:
+  codeview_net:
+    driver: bridge
+
+volumes:
+  mongo_data:
+  redis_data:
+  es_data:
+
+services:
+
+  # ── MongoDB ────────────────────────────────────────────────────────────────
+  mongo:
+    image: mongo:7
+    container_name: codeview_mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: online_judge
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - codeview_net
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis ──────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: codeview_redis
+    restart: unless-stopped
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - codeview_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ── API Service ────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: api-service/Dockerfile
+    container_name: codeview_api
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      MONGO_URI: mongodb://mongo:27017/online_judge
+      REDIS_URL: redis://redis:6379
+      CACHE_ENABLED: "true"
+      JWT_SECRET: ${JWT_SECRET:-dev_secret_change_in_prod}
+      JWT_EXPIRY: 1d
+      EXECUTION_SERVICE_URL: http://execution:5001
+      FRONTEND_URL: http://localhost:5173
+      LOG_FORMAT: json
+    ports:
+      - "5000:5000"
+    networks:
+      - codeview_net
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/api/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+
+  # ── Execution Service ──────────────────────────────────────────────────────
+  execution:
+    build:
+      context: .
+      dockerfile: execution-service/Dockerfile
+    container_name: codeview_execution
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 5001
+      MONGO_URI: mongodb://mongo:27017/online_judge
+      LOG_FORMAT: json
+    ports:
+      - "5001:5001"
+    networks:
+      - codeview_net
+    # Execution service needs to run compilers — keep privileged off
+    # but allow writing to /tmp
+    tmpfs:
+      - /tmp/executions:mode=1777
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5001/api/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+
+  # ── Frontend (dev server via Vite) ─────────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        VITE_API_URL: http://localhost:5000
+    container_name: codeview_frontend
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+    networks:
+      - codeview_net
+
+  # ── Elasticsearch ──────────────────────────────────────────────────────────
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    container_name: codeview_elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - cluster.name=codeview-logs
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - codeview_net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\\|yellow\"'"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+  # ── Logstash ───────────────────────────────────────────────────────────────
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.13.4
+    container_name: codeview_logstash
+    restart: unless-stopped
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    volumes:
+      - ./devops/elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - ./devops/elk/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+    ports:
+      - "5044:5044"   # Beats input
+      - "5000:5000/udp" # Syslog
+    networks:
+      - codeview_net
+
+  # ── Kibana ─────────────────────────────────────────────────────────────────
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    container_name: codeview_kibana
+    restart: unless-stopped
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - codeview_net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:5601/api/status | grep -q '\"level\":\"available\"'"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+  # ── Filebeat (log shipper) ─────────────────────────────────────────────────
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.13.4
+    container_name: codeview_filebeat
+    restart: unless-stopped
+    user: root
+    depends_on:
+      - logstash
+    volumes:
+      - ./devops/elk/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - codeview_net

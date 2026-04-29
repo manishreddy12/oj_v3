@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="11" failures="0" errors="0" time="0.44">
+  <testsuite name="Deployment Smoke Tests" errors="0" failures="0" skipped="0" timestamp="2026-04-28T03:39:48" time="0.415" tests="11">
+    <testcase classname="Deployment Smoke Tests API Service Health check should return 200" name="Deployment Smoke Tests API Service Health check should return 200" time="0.041">
+    </testcase>
+    <testcase classname="Deployment Smoke Tests API Service GET /api/problems should return 200" name="Deployment Smoke Tests API Service GET /api/problems should return 200" time="0.01">
+    </testcase>
+    <testcase classname="Deployment Smoke Tests API Service GET /api/contests should return 200" name="Deployment Smoke Tests API Service GET /api/contests should return 200" time="0.004">
+    </testcase>
+    <testcase classname="Deployment Smoke Tests API Service Invalid route should return 404" name="Deployment Smoke Tests API Service Invalid route should return 404" time="0.003">
+    </testcase>
+    <testcase classname="Deployment Smoke Tests Execution Service Health check should return 200" name="Deployment Smoke Tests Execution Service Health check should return 200" time="0.011">
+    </testcase>
+    <testcase classname="Deployment Smoke Tests Execution Service Submit Python code should return 201 with verdict" name="Deployment Smoke Tests Execution Service Submit Python code should return 201 with verdict" time="0.036">
+    </testcase>
+    <testcase classname="Deployment Smoke Tests Execution Service Submit code with wrong answer should return verdict with details" name="Deployment Smoke Tests Execution Service Submit code with wrong answer should return verdict with details" time="0.069">
+    </testcase>
+    <testcase classname="Deployment Smoke Tests Execution Service Submit with missing fields should return 400" name="Deployment Smoke Tests Execution Service Submit with missing fields should return 400" time="0.019">
+    </testcase>
+    <testcase classname="Deployment Smoke Tests Execution Service Submit with invalid language should return 400" name="Deployment Smoke Tests Execution Service Submit with invalid language should return 400" time="0.01">
+    </testcase>
+    <testcase classname="Deployment Smoke Tests Execution Service Invalid route should return 404" name="Deployment Smoke Tests Execution Service Invalid route should return 404" time="0.003">
+    </testcase>
+    <testcase classname="Deployment Smoke Tests Cross-Service Communication API service EXECUTION_SERVICE_URL should be reachable" name="Deployment Smoke Tests Cross-Service Communication API service EXECUTION_SERVICE_URL should be reachable" time="0.004">
+    </testcase>
+  </testsuite>
+</testsuites>
