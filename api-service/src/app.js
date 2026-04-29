@@ -22,15 +22,26 @@ class App {
    */
   _initializeMiddleware() {
     const corsOptions = {
-      origin: appConfig.nodeEnv === 'production'
-        ? appConfig.frontendUrl
-        : '*',
-      credentials: true,
+      origin: "*",
+      credentials: false,
     };
+
     this.app.use(cors(corsOptions));
-    this.app.use(express.json({ limit: '10mb' }));
+    this.app.use(express.json({ limit: "10mb" }));
     this.app.use(express.urlencoded({ extended: true }));
   }
+  
+  // _initializeMiddleware() {
+  //   const corsOptions = {
+  //     origin: appConfig.nodeEnv === 'production'
+  //       ? appConfig.frontendUrl
+  //       : '*',
+  //     credentials: true,
+  //   };
+  //   this.app.use(cors(corsOptions));
+  //   this.app.use(express.json({ limit: '10mb' }));
+  //   this.app.use(express.urlencoded({ extended: true }));
+  // }
 
   /**
    * Setup API routes
