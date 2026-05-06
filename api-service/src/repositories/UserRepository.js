@@ -14,6 +14,10 @@ class UserRepository {
     return this.userModel.findById(id);
   }
 
+  async findByIdWithPassword(id) {
+    return this.userModel.findById(id).select('+password');
+  }
+
   async findByEmail(email) {
     return this.userModel.findOne({ email }).select('+password');
   }

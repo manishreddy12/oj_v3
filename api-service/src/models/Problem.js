@@ -64,6 +64,10 @@ const problemSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'Problem creator is required'],
     },
+    is_deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

@@ -22,6 +22,9 @@ class UserRoutes {
     // Update profile image (authenticated user)
     this.router.put('/profile/image', this.userController.updateProfileImage());
 
+    // Change password (authenticated user)
+    this.router.put('/profile/password', this.userController.changePassword());
+
     // Admin-only routes
     this.router.get(
       '/',

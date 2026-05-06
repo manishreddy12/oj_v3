@@ -51,6 +51,14 @@ class ProblemRepository {
     });
   }
 
+  async softDelete(id) {
+    return this.problemModel.findByIdAndUpdate(
+      id,
+      { is_deleted: true },
+      { new: true }
+    );
+  }
+
   async delete(id) {
     return this.problemModel.findByIdAndDelete(id);
   }

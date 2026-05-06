@@ -24,15 +24,18 @@ class ProblemService {
   }
 
   async getProblems(filter = {}, page = 1, limit = 20) {
-    const query = {};
+    const query = { is_deleted: { $ne: true } };
     if (filter.difficulty) {
       query.difficulty = filter.difficulty;
     }
     if (filter.tags) {
       query.tags = { $in: Array.isArray(filter.tags) ? filter.tags : [filter.tags] };
     }
+    if (filter.search) {
+      query.title = { $regex: filter.search, $options: 'i' };
+    }
 
-    const hasFilter = filter.difficulty || filter.tags;
+    const hasFilter = filter.difficulty || filter.tags || filter.search;
 
     // Only cache unfiltered, first-page results
     if (!hasFilter && page === 1) {
@@ -62,7 +65,7 @@ class ProblemService {
     }
 
     const problem = await this.problemRepository.findById(id);
-    if (!problem) {
+    if (!problem || problem.is_deleted) {
       throw AppError.notFound('Problem not found');
     }
 
@@ -85,11 +88,11 @@ class ProblemService {
   }
 
   async deleteProblem(id) {
-    const problem = await this.problemRepository.delete(id);
+    const problem = await this.problemRepository.softDelete(id);
     if (!problem) {
       throw AppError.notFound('Problem not found');
     }
-    this.logger.info(`Problem deleted: ${problem.title}`);
+    this.logger.info(`Problem soft-deleted: ${problem.title}`);
 
     // Invalidate caches
     await this.redisClient.delete(`problem:${id}`);

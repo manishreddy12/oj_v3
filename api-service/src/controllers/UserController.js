@@ -77,6 +77,25 @@ class UserController {
     };
   }
 
+  // PUT /api/users/profile/password
+  changePassword() {
+    return async (req, res, next) => {
+      try {
+        const { currentPassword, newPassword } = req.body;
+        if (!currentPassword || !newPassword) {
+          throw AppError.badRequest('currentPassword and newPassword are required');
+        }
+        if (newPassword.length < 6) {
+          throw AppError.badRequest('New password must be at least 6 characters');
+        }
+        await this.userService.changePassword(req.user.userId, currentPassword, newPassword);
+        return ResponseFormatter.success(res, 200, 'Password changed successfully');
+      } catch (error) {
+        next(error);
+      }
+    };
+  }
+
   // DELETE /api/users/:id
   deleteUser() {
     return async (req, res, next) => {

@@ -2,12 +2,14 @@
 
 const AppError = require('../../shared/errors/AppError');
 const Logger = require('../../shared/logger/Logger');
+const PasswordHasher = require('../utils/PasswordHasher');
 
 class UserService {
 
   constructor(userRepository) {
     this.userRepository = userRepository;
     this.logger = new Logger('UserService');
+    this.passwordHasher = new PasswordHasher();
   }
 
   async getAllUsers() {
@@ -55,6 +57,20 @@ class UserService {
     }
     this.logger.info(`Profile image updated for: ${user.email}`);
     return user;
+  }
+
+  async changePassword(userId, currentPassword, newPassword) {
+    const user = await this.userRepository.findByIdWithPassword(userId);
+    if (!user) {
+      throw AppError.notFound('User not found');
+    }
+    const isMatch = await this.passwordHasher.compare(currentPassword, user.password);
+    if (!isMatch) {
+      throw AppError.badRequest('Current password is incorrect');
+    }
+    const hashed = await this.passwordHasher.hash(newPassword);
+    await this.userRepository.update(userId, { password: hashed });
+    this.logger.info(`Password changed for: ${user.email}`);
   }
 
   async deleteUser(id) {

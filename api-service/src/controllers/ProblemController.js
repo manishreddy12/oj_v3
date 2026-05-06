@@ -30,6 +30,7 @@ class ProblemController {
         const filter = {
           difficulty: req.query.difficulty,
           tags: req.query.tags,
+          search: req.query.search,
         };
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
