@@ -16,6 +16,9 @@ import AITools from './pages/AITools.jsx';
 import ContestList from './pages/ContestList.jsx';
 import ContestDetail from './pages/ContestDetail.jsx';
 import CreateContest from './pages/CreateContest.jsx';
+import LeaderboardPage from './pages/LeaderboardPage.jsx';
+import EditProblem from './pages/EditProblem.jsx';
+import AddTestcases from './pages/AddTestcases.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -33,6 +36,9 @@ createRoot(document.getElementById('root')).render(
       <Route path='/contests' element={<ContestList />} />
       <Route path='/contests/create' element={<CreateContest />} />
       <Route path='/contests/:id' element={<ContestDetail />} />
+      <Route path='/leaderboard' element={<LeaderboardPage />} />
+      <Route path='/problems/:id/edit' element={<EditProblem />} />
+      <Route path='/addtestcases' element={<AddTestcases />} />
     </Routes>
   </BrowserRouter>
 )

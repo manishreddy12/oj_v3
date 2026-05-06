@@ -108,6 +108,46 @@ class SubmissionController {
   }
 
   /**
+   * GET /api/leaderboard
+   */
+  getGlobalLeaderboard() {
+    return async (req, res, next) => {
+      try {
+        const leaderboard = await this.submissionService.getGlobalLeaderboard();
+        return res.status(200).json({
+          success: true,
+          message: 'Global leaderboard retrieved successfully',
+          data: { leaderboard },
+        });
+      } catch (error) {
+        next(error);
+      }
+    };
+  }
+
+  /**
+   * POST /api/submissions/optimize (AI stub)
+   */
+  optimizeCode() {
+    return async (req, res, next) => {
+      try {
+        const { sourceCode, language } = req.body;
+        if (!sourceCode || !language) {
+          throw AppError.badRequest('sourceCode and language are required');
+        }
+        const result = await this.aiService.optimizeCode(sourceCode, language);
+        return res.status(200).json({
+          success: true,
+          message: 'Optimization suggestion generated',
+          data: result,
+        });
+      } catch (error) {
+        next(error);
+      }
+    };
+  }
+
+  /**
    * POST /api/submissions/debug (AI stub)
    */
   debugCode() {

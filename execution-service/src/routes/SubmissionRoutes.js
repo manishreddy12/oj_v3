@@ -22,9 +22,10 @@ class SubmissionRoutes {
     // Get all submissions for a problem
     this.router.get('/problem/:problemId', this.submissionController.getProblemSubmissions());
 
-    // AI endpoints (fake implementations for now)
+    // AI endpoints (stub implementations)
     this.router.post('/explain', this.submissionController.explainCode());
     this.router.post('/debug', this.submissionController.debugCode());
+    this.router.post('/optimize', this.submissionController.optimizeCode());
   }
 
   getRouter() {

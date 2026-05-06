@@ -1,10 +1,3 @@
-#!/usr/bin/env bash
-# ─────────────────────────────────────────────────────────────────────────────
-# CodeView — Post-Deployment Service Tests
-#
-# Usage:  bash scripts/test-services.sh
-# Prereq: Services deployed via deploy.sh
-# ─────────────────────────────────────────────────────────────────────────────
 set -euo pipefail
 
 NAMESPACE="codeview"
@@ -38,7 +31,6 @@ else
     ok "All pods are in Running state"
 fi
 
-# ── 2. Port-Forward Services ─────────────────────────────────────────────────
 info "Setting up port-forwards..."
 
 kubectl port-forward svc/api-service "$API_LOCAL_PORT":5000 -n "$NAMESPACE" &
@@ -54,7 +46,6 @@ info "Port-forwards ready (API → :${API_LOCAL_PORT}, Exec → :${EXEC_LOCAL_PO
 API_URL="http://localhost:${API_LOCAL_PORT}"
 EXEC_URL="http://localhost:${EXEC_LOCAL_PORT}"
 
-# ── 3. API Service Health Check ──────────────────────────────────────────────
 info "Testing API Service..."
 
 HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$API_URL/api/health" 2>/dev/null || echo "000")

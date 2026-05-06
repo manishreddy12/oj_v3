@@ -31,14 +31,19 @@ const CreateProblem = () => {
     const addTestCase = () => {
         try {
             const newItem = JSON.parse(newTestCaseText);
-            if (!newItem.input || !newItem.expectedOutput) {
-                alert('Test case must have "input" and "expectedOutput" fields');
+            if (newItem.input === undefined || newItem.expectedOutput === undefined) {
+                setMessage({ type: 'error', text: 'Test case must have "input" and "expectedOutput" fields.' });
                 return;
             }
-            setTestCases(prev => [...prev, newItem]);
-            setNewTestCaseText('');
-        } catch (error) {
-            alert("Invalid JSON format");
+            setTestCases(prev => [...prev, {
+                input: String(newItem.input),
+                expectedOutput: String(newItem.expectedOutput),
+                isHidden: newItem.isHidden ?? false,
+            }]);
+            setNewTestCaseText('{"input": "", "expectedOutput": ""}');
+            setMessage({ type: '', text: '' });
+        } catch {
+            setMessage({ type: 'error', text: 'Invalid JSON format. Example: {"input": "4\\n2 7 11 15\\n9", "expectedOutput": "0 1"}' });
         }
     };
 
@@ -82,7 +87,12 @@ const CreateProblem = () => {
             setConstraints(''); setTestCases([]); setBoilerplateCpp('');
             setBoilerplatePython(''); setBoilerplateJava('');
         } catch (err) {
-            setMessage({ type: 'error', text: err.response?.data?.message || 'Error creating problem' });
+            const errData = err.response?.data;
+            // Show specific validation errors if available, otherwise generic message
+            const errText = Array.isArray(errData?.errors) && errData.errors.length > 0
+                ? errData.errors.join(' • ')
+                : (errData?.message || 'Error creating problem');
+            setMessage({ type: 'error', text: errText });
         } finally {
             setLoading(false);
         }

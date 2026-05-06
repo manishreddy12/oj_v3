@@ -1,14 +1,3 @@
-#!/usr/bin/env bash
-# ─────────────────────────────────────────────────────────────────────────────
-# CodeView — HPA Load Test for execution-service
-#
-# This script stress-tests the execution-service to trigger Horizontal Pod
-# Autoscaler scaling. It sends continuous code-execution requests and monitors
-# the pod count increasing from 2 → N (up to 8).
-#
-# Usage:  bash scripts/hpa-load-test.sh
-# Prereq: Services deployed via deploy.sh, metrics-server enabled
-# ─────────────────────────────────────────────────────────────────────────────
 set -euo pipefail
 
 NAMESPACE="codeview"
@@ -31,7 +20,6 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# ── 1. Pre-flight Checks ─────────────────────────────────────────────────────
 info "Running pre-flight checks..."
 
 # Check metrics-server
@@ -44,7 +32,6 @@ else
     exit 1
 fi
 
-# Check execution-service HPA exists
 if kubectl get hpa execution-service-hpa -n "$NAMESPACE" >/dev/null 2>&1; then
     ok "execution-service-hpa found"
 else
@@ -53,7 +40,6 @@ else
     exit 1
 fi
 
-# ── 2. Show Initial State ────────────────────────────────────────────────────
 echo ""
 echo -e "${BOLD}═══ Initial State ═══${NC}"
 kubectl get hpa execution-service-hpa -n "$NAMESPACE"
@@ -62,10 +48,8 @@ INITIAL_REPLICAS=$(kubectl get deployment execution-service -n "$NAMESPACE" -o j
 info "Current replicas: ${INITIAL_REPLICAS}"
 echo ""
 
-# ── 3. Deploy Load Generator Pod ─────────────────────────────────────────────
 info "Deploying CPU-intensive load generator pod..."
 
-# Get execution-service ClusterIP
 EXEC_SVC_IP=$(kubectl get svc execution-service -n "$NAMESPACE" -o jsonpath='{.spec.clusterIP}')
 EXEC_SVC_PORT=5001
 

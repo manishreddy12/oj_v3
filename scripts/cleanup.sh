@@ -1,11 +1,4 @@
-#!/usr/bin/env bash
-# ─────────────────────────────────────────────────────────────────────────────
-# CodeView — Cleanup / Teardown Script
-#
-# Usage:
-#   bash scripts/cleanup.sh           # delete namespace only
-#   bash scripts/cleanup.sh --full    # also stop Minikube + prune images
-# ─────────────────────────────────────────────────────────────────────────────
+
 set -euo pipefail
 
 NAMESPACE="codeview"
@@ -25,24 +18,22 @@ info "Deleting codeview namespace and all resources..."
 kubectl delete namespace "$NAMESPACE" --ignore-not-found=true --timeout=120s
 ok "Namespace '$NAMESPACE' deleted"
 
-# Delete ELK namespace if present
 if kubectl get namespace logging >/dev/null 2>&1; then
     info "Deleting logging namespace..."
     kubectl delete namespace logging --ignore-not-found=true --timeout=60s
     ok "Namespace 'logging' deleted"
 fi
 
-# Delete any leftover HPA load generator
 kubectl delete pod hpa-load-generator -n "$NAMESPACE" --ignore-not-found=true 2>/dev/null || true
 
-# ── 2. Remove /etc/hosts entry ───────────────────────────────────────────────
+# ── 2. Remove /etc/hosts entry 
 if grep -q "codeview.local" /etc/hosts 2>/dev/null; then
     info "Removing codeview.local from /etc/hosts (requires sudo)..."
     sudo sed -i '/codeview.local/d' /etc/hosts
     ok "Removed codeview.local from /etc/hosts"
 fi
 
-# ── 3. Full Cleanup (optional) ───────────────────────────────────────────────
+# ── 3. Full Cleanup (optional) 
 if [ "$FULL_CLEANUP" = true ]; then
     info "Full cleanup requested..."
     

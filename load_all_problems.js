@@ -1,12 +1,3 @@
-/**
- * Bulk Problem Loader — Loads all problems from both JSON files into the Online Judge.
- * 
- * Usage:
- *   1. Login as admin and get the JWT token
- *   2. Replace TOKEN below with your admin JWT
- *   3. Run: node load_all_problems.js
- */
-
 const fs = require('fs');
 const http = require('http');
 

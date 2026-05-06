@@ -55,6 +55,31 @@ class SubmissionRepository {
   async delete(id) {
     return this.submissionModel.findByIdAndDelete(id);
   }
+
+  async getGlobalLeaderboard(limit = 50) {
+    return this.submissionModel.aggregate([
+      { $match: { status: 'Accepted' } },
+      {
+        $group: {
+          _id: '$user',
+          username: { $first: '$username' },
+          solvedProblems: { $addToSet: '$problem' },
+          totalAccepted: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          userId: '$_id',
+          username: 1,
+          solved: { $size: '$solvedProblems' },
+          totalAccepted: 1,
+        },
+      },
+      { $sort: { solved: -1, totalAccepted: -1 } },
+      { $limit: limit },
+    ]);
+  }
 }
 
 module.exports = SubmissionRepository;

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import CodeMirror from '@uiw/react-codemirror';
 import ReactMarkdown from 'react-markdown';
 import { cpp } from '@codemirror/lang-cpp';
@@ -246,7 +246,20 @@ const OjLayout = () => {
     <div ref={containerRef} className="flex h-[calc(100vh-64px)] w-full overflow-hidden relative">
       {/* Problem Panel (Left) */}
       <div className="h-full overflow-auto p-6 bg-white" style={{ width: leftWidth }}>
-        <h1 className="text-2xl font-bold mb-2 text-gray-900">{problem.title || "Untitled Problem"}</h1>
+        <div className="flex items-start justify-between mb-2 gap-2">
+          <h1 className="text-2xl font-bold text-gray-900">{problem.title || "Untitled Problem"}</h1>
+          {(localStorage.getItem('role') === 'admin' || localStorage.getItem('role') === 'problem_setter') && (
+            <Link
+              to={`/problems/${id}/edit`}
+              className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 border border-indigo-200 bg-indigo-50 rounded-lg hover:bg-indigo-100 hover:border-indigo-300 transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+              Edit
+            </Link>
+          )}
+        </div>
 
         <div className="flex items-center gap-3 mb-4">
           <span className={`inline-block px-2.5 py-0.5 text-xs font-semibold rounded-full ${
@@ -264,8 +277,10 @@ const OjLayout = () => {
         </div>
 
         <div className="prose max-w-none">
-          <div className="mb-4 text-gray-700 leading-relaxed whitespace-pre-wrap">
-            {problem.description || "No description available."}
+          <div className="mb-4 text-gray-700 leading-relaxed prose prose-sm max-w-none">
+            <ReactMarkdown>
+              {problem.description || 'No description available.'}
+            </ReactMarkdown>
           </div>
 
           {problem.constraints && (

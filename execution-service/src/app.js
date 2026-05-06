@@ -85,6 +85,9 @@ class App {
     const submissionRoutes = new SubmissionRoutes(this.submissionController);
     this.app.use('/api/submissions', submissionRoutes.getRouter());
 
+    // Global leaderboard
+    this.app.get('/api/leaderboard', this.submissionController.getGlobalLeaderboard());
+
     // 404 handler
     this.app.all('*', (req, res) => {
       res.status(404).json({

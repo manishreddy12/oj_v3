@@ -1,10 +1,4 @@
-#!/usr/bin/env bash
-# ─────────────────────────────────────────────────────────────────────────────
-# CodeView — Full Minikube Deployment Script
-#
-# Usage:  bash scripts/deploy.sh
-# Prereq: Docker, Minikube, kubectl installed
-# ─────────────────────────────────────────────────────────────────────────────
+
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -39,18 +33,16 @@ else
     ok "Minikube started"
 fi
 
-# ── 3. Enable Required Addons ────────────────────────────────────────────────
 info "Enabling Minikube addons..."
 minikube addons enable metrics-server 2>/dev/null || true
 minikube addons enable ingress        2>/dev/null || true
 ok "Addons enabled (metrics-server, ingress)"
 
-# ── 4. Point Docker to Minikube's Daemon ─────────────────────────────────────
 info "Pointing Docker CLI to Minikube's daemon..."
 eval $(minikube docker-env)
 ok "Docker now builds directly into Minikube"
 
-# ── 5. Build Docker Images ──────────────────────────────────────────────────
+
 info "Building Docker images (this may take a few minutes)..."
 
 MINIKUBE_IP=$(minikube ip)
@@ -76,7 +68,6 @@ docker build \
 
 ok "All Docker images built"
 
-# ── 6. Deploy MongoDB & Redis Inside Minikube ────────────────────────────────
 info "Deploying MongoDB and Redis into Minikube..."
 
 # Create namespace first
@@ -163,17 +154,12 @@ EOF
 
 ok "MongoDB and Redis deployed"
 
-# ── 7. Update Image References in Deployment YAMLs ──────────────────────────
-# We use local images (no DockerHub), so patch the imagePullPolicy and image name
 info "Applying K8s manifests..."
-
-# Secrets and ConfigMaps
 kubectl apply -f "$K8S_DIR/api-service/secret.yaml"
 kubectl apply -f "$K8S_DIR/api-service/configmap.yaml"
 kubectl apply -f "$K8S_DIR/execution-service/secret.yaml"
 kubectl apply -f "$K8S_DIR/execution-service/configmap.yaml"
 
-# Update the secrets to point to in-cluster MongoDB and Redis
 kubectl create secret generic api-service-secret \
     --namespace="$NAMESPACE" \
     --from-literal=MONGO_URI="mongodb://mongo:27017/online_judge" \

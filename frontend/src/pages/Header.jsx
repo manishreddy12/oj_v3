@@ -3,10 +3,11 @@ import codeview from '../assets/codeview.png';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const NAV_LINKS = [
-  { to: '/home',       label: 'Problems',       always: true  },
-  { to: '/contests',   label: 'Contests',        always: true  },
-  { to: '/submissions',label: 'Submissions',     auth: true    },
-  { to: '/ai-tools',   label: 'AI Tools',        auth: true    },
+  { to: '/home',        label: 'Problems',     always: true },
+  { to: '/contests',    label: 'Contests',     always: true },
+  { to: '/leaderboard', label: 'Leaderboard',  always: true },
+  { to: '/submissions', label: 'Submissions',  auth: true   },
+  { to: '/ai-tools',    label: 'AI Tools',     auth: true   },
 ];
 
 const Header = () => {

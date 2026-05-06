@@ -75,6 +75,10 @@ class SubmissionService {
   async getProblemSubmissions(problemId) {
     return this.submissionRepository.findByProblemId(problemId);
   }
+
+  async getGlobalLeaderboard() {
+    return this.submissionRepository.getGlobalLeaderboard(50);
+  }
 }
 
 module.exports = SubmissionService;

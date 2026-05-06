@@ -28,6 +28,15 @@ class AIService {
     };
   }
 
+  async optimizeCode(sourceCode, language) {
+    this.logger.info('AI optimizeCode called (stub)');
+    return {
+      suggestion: 'AI optimization suggestions are not yet implemented. This is a stub response.',
+      language,
+      codeLength: sourceCode.length,
+    };
+  }
+
   async generateHint(problemDescription) {
     this.logger.info('AI generateHint called (stub)');
     return {

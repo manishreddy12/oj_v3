@@ -6,6 +6,8 @@ const ProblemsTable = () => {
   const navigate = useNavigate();
   const [problems, setProblems] = useState([]);
   const [difficulty, setDifficulty] = useState('');
+  const [search, setSearch] = useState('');
+  const [solvedIds, setSolvedIds] = useState(new Set());
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -18,6 +20,7 @@ const ProblemsTable = () => {
         setLoading(true);
         const params = new URLSearchParams();
         if (difficulty) params.append('difficulty', difficulty);
+        if (search) params.append('search', search);
         params.append('page', page);
         params.append('limit', limit);
         const url = `${import.meta.env.VITE_API_URL}/api/problems?${params.toString()}`;
@@ -34,12 +37,33 @@ const ProblemsTable = () => {
       }
     };
     handleProblems();
-  }, [difficulty, page]);
+  }, [difficulty, search, page]);
 
-  // Reset page when filter changes
+  // Reset page when filters change
   useEffect(() => {
     setPage(1);
-  }, [difficulty]);
+  }, [difficulty, search]);
+
+  // Fetch solved problem IDs for the logged-in user
+  useEffect(() => {
+    const fetchSolved = async () => {
+      const userId = localStorage.getItem('userId');
+      if (!userId) return;
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_EXEC_URL}/api/submissions/user/${userId}`
+        );
+        const subs = res.data.data?.submissions || [];
+        const ids = new Set(
+          subs.filter(s => s.status === 'Accepted').map(s => s.problem)
+        );
+        setSolvedIds(ids);
+      } catch {
+        // not critical — skip silently
+      }
+    };
+    fetchSolved();
+  }, []);
 
   const getProblem = (id) => {
     navigate(`/problem/${id}`);
@@ -61,7 +85,14 @@ const ProblemsTable = () => {
             <span className="text-sm text-gray-500">({total} total)</span>
           )}
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search problems..."
+            className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors w-44"
+          />
           <label className="text-sm font-medium text-gray-600">Difficulty:</label>
           <select
             value={difficulty}
@@ -133,7 +164,12 @@ const ProblemsTable = () => {
                         {(page - 1) * limit + index + 1}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
-                        {problem.title}
+                        <div className="flex items-center gap-2">
+                          {solvedIds.has(problem._id) && (
+                            <span className="text-green-500 font-bold text-sm" title="Solved">✓</span>
+                          )}
+                          {problem.title}
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${difficultyColor(problem.difficulty)}`}>
